@@ -33,6 +33,7 @@ group :development, :test do
   gem 'rspec-rails'
 
   gem 'faker'
+  gem 'simplecov', require: false
 end
 
 group :development do

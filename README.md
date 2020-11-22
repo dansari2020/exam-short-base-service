@@ -36,9 +36,32 @@ In Jenfi, Service Objects hold all the key business logic and this file underpin
 # Some Questions to Guide
 
 1. What is the entry point?
-1. How is this called?
-1. What can the BaseService do?
-1. ...
+- call and call! are the entry point
+2. How is this called?
+```
+class CompanyCreator
+  include BaseService
+
+  def call(name:)
+    company = Company.new(name: name)
+     if company.save
+       context.merge(compay: company)
+     else
+       context.fail!(errors: company.errors.full_messages.to_sentence)
+    end
+  end
+end
+
+result = CompanyCreator.call(name: 'Jenfi')
+if result.success?
+ render somthing
+else
+ render json: {errors: result.errors}
+end
+```
+3. What can the BaseService do?
+The base service has been using Gourmet Service Objects. the base service provides a common interface for running user interactions.
+
 
 # Startup Instructions<a name="instructions"></a>
 
@@ -52,6 +75,7 @@ No requirement to use docker - just be able to run `rspec .`
 
 # Your Thoughts <a name="thoughts"></a>
 
-- 
-- 
-- 
+- I wrote 90% test coverage and there is have some suck codes. In create company migration added null: false to name but it missed to add validation to company because of handle errors by active records
+- the `BaseService` is like <a href="https://github.com/collectiveidea/interactor">interactor gem</a> and it helps to avoid fat-controller or fat-model and clean up codes, but the service objects are not good idea because service objects throw out the fundamental advantages of object-oriented programming</b>.  
+- I prefer using concerns and POROs instead of service objects encourages better interfaces, proper separation of concerns, sound use of OOP principles, and easier code comprehension and service object is not easy to use and 
+didn't have good interface and I'd like to use instance method and callback and control input by active record validation. 
